@@ -4,6 +4,7 @@ import { TrendingUp, TrendingDown, DollarSign } from 'lucide-react';
 import { AreaChart, Area, Tooltip, ResponsiveContainer } from 'recharts';
 import Layout from '../components/Layout';
 import { useFinance } from '../context/FinancialContext';
+import { useAuth } from '../context/AuthContext';
 
 const StatCard = ({ title, amount, trend, isPositive, delay }) => (
     <motion.div
@@ -29,6 +30,7 @@ const StatCard = ({ title, amount, trend, isPositive, delay }) => (
 
 const Dashboard = () => {
     const { balance, income, expense, transactions, accounts } = useFinance();
+    const { user } = useAuth();
 
     return (
         <Layout>
