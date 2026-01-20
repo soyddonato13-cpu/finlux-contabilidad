@@ -130,7 +130,9 @@ const Dashboard = () => {
                                 </div>
                                 <div>
                                     <div className="font-medium text-white">{item.description}</div>
-                                    <div className="text-xs text-slate-500">{new Date(item.date).toLocaleDateString()} • {item.category}</div>
+                                    <div className="text-[10px] text-slate-500 font-medium">
+                                        <span className="capitalize">{new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(new Date(item.date))}</span> • {new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(item.date))} • {item.category}
+                                    </div>
                                 </div>
                             </div>
                             <div className={`font-mono font-medium ${(item.type === 'income' ? 'text-primary' : 'text-danger')}`}>
