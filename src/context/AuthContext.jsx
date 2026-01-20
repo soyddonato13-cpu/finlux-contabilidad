@@ -22,8 +22,13 @@ export const AuthProvider = ({ children }) => {
         return () => unsubscribe();
     }, []);
 
-    const loginWithGoogle = () => {
-        return signInWithPopup(auth, googleProvider);
+    const loginWithGoogle = async () => {
+        try {
+            return await signInWithPopup(auth, googleProvider);
+        } catch (error) {
+            console.error("Error al iniciar sesión:", error);
+            alert("Error al iniciar sesión: Asegúrate de que el dominio de tu web esté autorizado en Firebase.");
+        }
     };
 
     const logout = async () => {
