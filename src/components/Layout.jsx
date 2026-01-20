@@ -168,7 +168,7 @@ const Layout = ({ children }) => {
                 <motion.button
                     onClick={openModal}
                     whileTap={{ scale: 0.9 }}
-                    className="w-12 h-12 bg-gradient-to-tr from-primary to-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-primary/30 border-2 border-white/10"
+                    className="w-12 h-12 bg-gradient-to-tr from-primary to-[#b8860b] rounded-2xl flex items-center justify-center text-[#0A192F] shadow-lg shadow-primary/30 border-2 border-white/10"
                 >
                     <PlusCircle size={24} />
                 </motion.button>

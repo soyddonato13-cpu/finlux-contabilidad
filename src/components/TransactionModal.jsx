@@ -70,7 +70,7 @@ const TransactionModal = () => {
                     >
                         <div className="bg-surface border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
                             {/* Decorative Glow */}
-                            <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${type === 'income' ? 'from-primary to-emerald-300' : 'from-danger to-orange-400'}`} />
+                            <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${type === 'income' ? 'from-primary to-accent' : 'from-danger to-orange-400'}`} />
 
                             <div className="flex justify-between items-center mb-6">
                                 <h2 className="text-2xl font-bold text-white">
@@ -112,7 +112,7 @@ const TransactionModal = () => {
                                             value={amount}
                                             onChange={(e) => setAmount(e.target.value)}
                                             placeholder="0.00"
-                                            className="w-full bg-background border border-white/10 rounded-xl py-4 pl-10 pr-4 text-2xl font-mono text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                            className="w-full bg-background border border-white/10 rounded-xl py-4 pl-10 pr-4 text-2xl font-mono text-white focus:outline-none focus:border-primary/50 transition-colors placeholder:text-slate-700"
                                             autoFocus
                                         />
                                     </div>
@@ -127,7 +127,7 @@ const TransactionModal = () => {
                                         className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 transition-colors"
                                     >
                                         {accounts.map(acc => (
-                                            <option key={acc.id} value={acc.id}>{acc.name} (${acc.balance})</option>
+                                            <option key={acc.id} value={acc.id} className="bg-surface">{acc.name} (${acc.balance})</option>
                                         ))}
                                     </select>
                                 </div>
@@ -140,7 +140,7 @@ const TransactionModal = () => {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Ej: Cena con amigos..."
-                                        className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white text-base md:text-sm focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white text-base md:text-sm focus:outline-none focus:border-primary/50 transition-colors placeholder:text-slate-700"
                                     />
                                 </div>
 
@@ -153,7 +153,7 @@ const TransactionModal = () => {
                                                 key={cat}
                                                 type="button"
                                                 onClick={() => setCategory(cat)}
-                                                className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors whitespace-nowrap ${category === cat ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-transparent text-slate-400 border-white/10 hover:border-white/30'}`}
+                                                className={`px-4 py-2 rounded-full text-[10px] font-bold border transition-all uppercase tracking-tighter whitespace-nowrap ${category === cat ? 'bg-primary text-[#0A192F] border-primary shadow-lg shadow-primary/20' : 'bg-transparent text-slate-500 border-white/10 hover:border-white/30'}`}
                                             >
                                                 {cat}
                                             </button>
@@ -165,7 +165,7 @@ const TransactionModal = () => {
                                     whileHover={{ scale: 1.02 }}
                                     whileTap={{ scale: 0.98 }}
                                     type="submit"
-                                    className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 mt-4 ${type === 'income' ? 'bg-primary text-white shadow-primary/25' : 'bg-danger text-white shadow-danger/25'}`}
+                                    className={`w-full py-4 rounded-xl font-black text-lg shadow-lg flex items-center justify-center gap-2 mt-4 transition-colors ${type === 'income' ? 'bg-primary text-[#0A192F] shadow-primary/25' : 'bg-danger text-white shadow-danger/25'}`}
                                 >
                                     <Check size={20} />
                                     <span>{editingTransaction ? 'Guardar Cambios' : 'Guardar Transacción'}</span>
