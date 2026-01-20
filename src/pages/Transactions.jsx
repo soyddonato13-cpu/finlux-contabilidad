@@ -1,13 +1,52 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Search, Filter, ArrowUpRight, ArrowDownLeft, Trash2 } from 'lucide-react';
+import { Search, Filter, ArrowUpRight, ArrowDownLeft, Trash2, Edit, Download, FileText } from 'lucide-react';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import Layout from '../components/Layout';
 import { useFinance } from '../context/FinancialContext';
 
 const Transactions = () => {
-    const { transactions } = useFinance();
+    const { transactions, deleteTransaction, openModal } = useFinance();
     const [filter, setFilter] = useState('all'); // all, income, expense
     const [searchTerm, setSearchTerm] = useState('');
+
+    const exportToCSV = () => {
+        const headers = ['Fecha,Descripción,Categoría,Tipo,Monto'];
+        const rows = transactions.map(t => [
+            new Date(t.date).toLocaleDateString(),
+            t.description,
+            t.category,
+            t.type === 'income' ? 'Ingreso' : 'Gasto',
+            t.amount
+        ].join(','));
+
+        const csvContent = headers.concat(rows).join('\n');
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute('download', 'finlux_report.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const exportToPDF = () => {
+        const doc = new jsPDF();
+        doc.text('FinLux - Reporte de Movimientos', 14, 15);
+        doc.autoTable({
+            startY: 20,
+            head: [['Fecha', 'Descripción', 'Categoría', 'Tipo', 'Monto']],
+            body: transactions.map(t => [
+                new Date(t.date).toLocaleDateString(),
+                t.description,
+                t.category,
+                t.type === 'income' ? 'Ingreso' : 'Gasto',
+                `$${t.amount.toLocaleString()}`
+            ]),
+        });
+        doc.save('finlux_report.pdf');
+    };
 
     const filteredTransactions = transactions.filter(t => {
         const matchesFilter = filter === 'all' || t.type === filter;
@@ -16,12 +55,35 @@ const Transactions = () => {
         return matchesFilter && matchesSearch;
     });
 
+    const handleDelete = (id) => {
+        if (window.confirm('¿Estás seguro de que quieres eliminar este registro?')) {
+            deleteTransaction(id);
+        }
+    };
+
     return (
         <Layout>
             <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
                     <h2 className="text-3xl font-bold text-white">Historial de Movimientos</h2>
                     <p className="text-slate-400">Gestiona y revisa todas tus transacciones.</p>
+                </div>
+
+                <div className="flex gap-3">
+                    <button
+                        onClick={exportToCSV}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                    >
+                        <Download size={16} />
+                        <span>CSV</span>
+                    </button>
+                    <button
+                        onClick={exportToPDF}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                    >
+                        <FileText size={16} />
+                        <span>PDF</span>
+                    </button>
                 </div>
 
                 <div className="flex gap-2">
@@ -100,9 +162,22 @@ const Transactions = () => {
                                             {t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
                                         </td>
                                         <td className="p-6 text-center">
-                                            <button className="p-2 hover:bg-danger/20 hover:text-danger rounded-lg text-slate-500 transition-colors opacity-0 group-hover:opacity-100">
-                                                <Trash2 size={16} />
-                                            </button>
+                                            <div className="flex justify-center gap-2">
+                                                <button
+                                                    onClick={() => openModal(t)}
+                                                    className="p-2 hover:bg-white/10 rounded-lg transition-colors text-slate-400 hover:text-white"
+                                                    title="Editar"
+                                                >
+                                                    <Edit size={16} />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDelete(t.id)}
+                                                    className="p-2 hover:bg-danger/20 rounded-lg transition-colors text-slate-400 hover:text-danger"
+                                                    title="Eliminar"
+                                                >
+                                                    <Trash2 size={16} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </motion.tr>
                                 ))

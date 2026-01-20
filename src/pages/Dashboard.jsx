@@ -28,7 +28,7 @@ const StatCard = ({ title, amount, trend, isPositive, delay }) => (
 );
 
 const Dashboard = () => {
-    const { balance, income, expense, transactions } = useFinance();
+    const { balance, income, expense, transactions, accounts } = useFinance();
 
     return (
         <Layout>
@@ -48,6 +48,25 @@ const Dashboard = () => {
                 <StatCard title="Balance Total" amount={`$${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="+0%" isPositive={true} delay={0.1} />
                 <StatCard title="Ingresos (Global)" amount={`$${income.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={true} delay={0.2} />
                 <StatCard title="Gastos (Global)" amount={`$${expense.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={false} delay={0.3} />
+            </div>
+
+            {/* Accounts Quick View */}
+            <div className="mb-8">
+                <h3 className="text-sm uppercase tracking-widest text-slate-500 font-bold mb-4">Relación de Cuentas</h3>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    {accounts.map((acc, i) => (
+                        <motion.div
+                            key={acc.id}
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.4 + (i * 0.1) }}
+                            className="bg-white/5 border border-white/5 p-4 rounded-2xl flex items-center justify-between"
+                        >
+                            <span className="text-slate-400 text-sm">{acc.name}</span>
+                            <span className="text-white font-mono font-bold">${acc.balance.toLocaleString()}</span>
+                        </motion.div>
+                    ))}
+                </div>
             </div>
 
             {/* Main Chart Section */}

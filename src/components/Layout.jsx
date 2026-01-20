@@ -1,8 +1,9 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Wallet, PieChart, Settings, LogOut, PlusCircle } from 'lucide-react';
+import { LayoutDashboard, CreditCard, Landmark, Target, PieChart, Settings, LogOut, PlusCircle } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useFinance } from '../context/FinancialContext';
+import { useAuth } from '../context/AuthContext';
 import TransactionModal from './TransactionModal';
 import { useSound } from '../hooks/useSound';
 
@@ -27,7 +28,8 @@ const SidebarItem = ({ icon: Icon, label, to, active }) => {
 
 const Layout = ({ children }) => {
     const location = useLocation();
-    const { openModal } = useFinance(); // Import openModal
+    const { openModal } = useFinance();
+    const { user, loginWithGoogle, logout } = useAuth();
 
     return (
         <div className="flex h-screen bg-background relative overflow-hidden">
@@ -56,26 +58,43 @@ const Layout = ({ children }) => {
 
                 <nav className="flex-1 space-y-2">
                     <SidebarItem icon={LayoutDashboard} label="Resumen" to="/" active={location.pathname === '/'} />
-                    <SidebarItem icon={Wallet} label="Transacciones" to="/transactions" active={location.pathname === '/transactions'} />
+                    <SidebarItem icon={Landmark} label="Cuentas" to="/accounts" active={location.pathname === '/accounts'} />
+                    <SidebarItem icon={Target} label="Presupuestos" to="/budgets" active={location.pathname === '/budgets'} />
+                    <SidebarItem icon={CreditCard} label="Movimientos" to="/transactions" active={location.pathname === '/transactions'} />
                     <SidebarItem icon={PieChart} label="Estadísticas" to="/stats" active={location.pathname === '/stats'} />
                     <SidebarItem icon={Settings} label="Ajustes" to="/settings" active={location.pathname === '/settings'} />
                 </nav>
 
-                <div className="pt-6 border-t border-white/5">
+                <div className="pt-6 border-t border-white/5 space-y-4">
                     <motion.button
                         onClick={openModal}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-semibold shadow-lg shadow-primary/20 flex items-center justify-center gap-2 mb-4"
+                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-semibold shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
                     >
                         <PlusCircle size={20} />
                         <span>Nuevo Movimiento</span>
                     </motion.button>
 
-                    <button className="flex items-center gap-3 p-3 text-slate-400 hover:text-danger hover:bg-danger/10 rounded-xl w-full transition-colors">
-                        <LogOut size={20} />
-                        <span>Cerrar Sesión</span>
-                    </button>
+                    {user ? (
+                        <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5">
+                            <img src={user.photoURL} alt={user.displayName} className="w-8 h-8 rounded-full border border-primary/50" />
+                            <div className="flex-1 min-w-0">
+                                <p className="text-sm font-bold text-white truncate">{user.displayName}</p>
+                                <button onClick={logout} className="text-xs text-slate-500 hover:text-danger flex items-center gap-1 transition-colors">
+                                    <LogOut size={12} />
+                                    Cerrar Sesión
+                                </button>
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={loginWithGoogle}
+                            className="w-full py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white flex items-center justify-center gap-2 transition-all"
+                        >
+                            <span>Acceder con Google</span>
+                        </button>
+                    )}
                 </div>
             </motion.aside>
 
@@ -89,10 +108,10 @@ const Layout = ({ children }) => {
             {/* Mobile Bottom Navigation */}
             <div className="fixed bottom-0 left-0 w-full bg-surface/80 backdrop-blur-xl border-t border-white/5 md:hidden z-50 flex justify-around items-center p-3 pb-safe">
                 <Link to="/" className={`p-2 rounded-xl transition-colors ${location.pathname === '/' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
-                    <LayoutDashboard size={24} />
+                    <LayoutDashboard size={22} />
                 </Link>
-                <Link to="/transactions" className={`p-2 rounded-xl transition-colors ${location.pathname === '/transactions' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
-                    <Wallet size={24} />
+                <Link to="/accounts" className={`p-2 rounded-xl transition-colors ${location.pathname === '/accounts' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
+                    <Landmark size={22} />
                 </Link>
 
                 <motion.button
@@ -103,11 +122,11 @@ const Layout = ({ children }) => {
                     <PlusCircle size={24} />
                 </motion.button>
 
-                <Link to="/stats" className={`p-2 rounded-xl transition-colors ${location.pathname === '/stats' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
-                    <PieChart size={24} />
+                <Link to="/budgets" className={`p-2 rounded-xl transition-colors ${location.pathname === '/budgets' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
+                    <Target size={22} />
                 </Link>
-                <Link to="/settings" className={`p-2 rounded-xl transition-colors ${location.pathname === '/settings' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
-                    <Settings size={24} />
+                <Link to="/transactions" className={`p-2 rounded-xl transition-colors ${location.pathname === '/transactions' ? 'text-primary bg-primary/10' : 'text-slate-400'}`}>
+                    <CreditCard size={22} />
                 </Link>
             </div>        </div>
     );

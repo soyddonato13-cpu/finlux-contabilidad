@@ -1,30 +1,50 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Check } from 'lucide-react';
 import { useFinance } from '../context/FinancialContext';
 
 const TransactionModal = () => {
-    const { isModalOpen, closeModal, addTransaction } = useFinance();
+    const { isModalOpen, closeModal, addTransaction, updateTransaction, editingTransaction, accounts } = useFinance();
     const [type, setType] = useState('expense');
     const [amount, setAmount] = useState('');
     const [description, setDescription] = useState('');
     const [category, setCategory] = useState('');
+    const [accountId, setAccountId] = useState(accounts[0]?.id || '');
+
+    useEffect(() => {
+        if (editingTransaction) {
+            setType(editingTransaction.type);
+            setAmount(editingTransaction.amount.toString());
+            setDescription(editingTransaction.description);
+            setCategory(editingTransaction.category);
+            setAccountId(editingTransaction.accountId);
+        } else {
+            setType('expense');
+            setAmount('');
+            setDescription('');
+            setCategory('');
+            setAccountId(accounts[0]?.id || '');
+        }
+    }, [editingTransaction, isModalOpen, accounts]);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!amount || !description) return;
+        if (!amount || !description || !accountId) return;
 
-        addTransaction({
+        const transactionData = {
             type,
             amount: parseFloat(amount),
             description,
-            category: category || 'General'
-        });
+            category: category || 'General',
+            accountId
+        };
 
-        // Reset and Close
-        setAmount('');
-        setDescription('');
-        setCategory('');
+        if (editingTransaction) {
+            updateTransaction(editingTransaction.id, transactionData);
+        } else {
+            addTransaction(transactionData);
+        }
+
         closeModal();
     };
 
@@ -53,7 +73,9 @@ const TransactionModal = () => {
                             <div className={`absolute top-0 left-0 w-full h-2 bg-gradient-to-r ${type === 'income' ? 'from-primary to-emerald-300' : 'from-danger to-orange-400'}`} />
 
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-bold text-white">Nuevo Movimiento</h2>
+                                <h2 className="text-2xl font-bold text-white">
+                                    {editingTransaction ? 'Editar Movimiento' : 'Nuevo Movimiento'}
+                                </h2>
                                 <button onClick={closeModal} className="p-2 hover:bg-white/10 rounded-full transition-colors">
                                     <X size={20} className="text-slate-400" />
                                 </button>
@@ -96,6 +118,20 @@ const TransactionModal = () => {
                                     </div>
                                 </div>
 
+                                {/* Account Selector */}
+                                <div>
+                                    <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2">Cuenta</label>
+                                    <select
+                                        value={accountId}
+                                        onChange={(e) => setAccountId(e.target.value)}
+                                        className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                    >
+                                        {accounts.map(acc => (
+                                            <option key={acc.id} value={acc.id}>{acc.name} (${acc.balance})</option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 {/* Description Input */}
                                 <div>
                                     <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2">Descripción</label>
@@ -132,7 +168,7 @@ const TransactionModal = () => {
                                     className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 mt-4 ${type === 'income' ? 'bg-primary text-white shadow-primary/25' : 'bg-danger text-white shadow-danger/25'}`}
                                 >
                                     <Check size={20} />
-                                    <span>Guardar Transacción</span>
+                                    <span>{editingTransaction ? 'Guardar Cambios' : 'Guardar Transacción'}</span>
                                 </motion.button>
                             </form>
                         </div>
