@@ -140,13 +140,13 @@ const Layout = ({ children }) => {
             {/* Mobile Bottom Navigation */}
             <div className="fixed bottom-0 left-0 w-full bg-surface/90 backdrop-blur-2xl border-t border-white/5 md:hidden z-50 flex justify-around items-center p-3 pb-safe shadow-2xl">
                 <Link to="/" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/' ? 'text-primary' : 'text-slate-500'}`}>
-                    <LayoutDashboard size={20} />
-                    <span className="text-[10px] font-bold uppercase tracking-tighter">Inicio</span>
+                    <LayoutDashboard size={18} />
+                    <span className="text-[9px] font-bold uppercase tracking-tighter">Inicio</span>
                 </Link>
 
-                <Link to="/budgets" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/budgets' ? 'text-primary' : 'text-slate-500'}`}>
-                    <Target size={20} />
-                    <span className="text-[10px] font-bold uppercase tracking-tighter">Metas</span>
+                <Link to="/accounts" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/accounts' ? 'text-primary' : 'text-slate-500'}`}>
+                    <Landmark size={18} />
+                    <span className="text-[9px] font-bold uppercase tracking-tighter">Cuentas</span>
                 </Link>
 
                 <motion.button
@@ -157,14 +157,14 @@ const Layout = ({ children }) => {
                     <PlusCircle size={24} />
                 </motion.button>
 
-                <Link to="/stats" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/stats' ? 'text-primary' : 'text-slate-500'}`}>
-                    <PieChart size={20} />
-                    <span className="text-[10px] font-bold uppercase tracking-tighter">Análisis</span>
+                <Link to="/budgets" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/budgets' ? 'text-primary' : 'text-slate-500'}`}>
+                    <Target size={18} />
+                    <span className="text-[9px] font-bold uppercase tracking-tighter">Metas</span>
                 </Link>
 
-                <Link to="/transactions" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/transactions' ? 'text-primary' : 'text-slate-500'}`}>
-                    <CreditCard size={20} />
-                    <span className="text-[10px] font-bold uppercase tracking-tighter">Lista</span>
+                <Link to="/stats" className={`flex flex-col items-center gap-1 transition-colors ${location.pathname === '/stats' ? 'text-primary' : 'text-slate-500'}`}>
+                    <PieChart size={18} />
+                    <span className="text-[9px] font-bold uppercase tracking-tighter">Análisis</span>
                 </Link>
             </div>        </div>
     );
