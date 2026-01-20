@@ -88,7 +88,7 @@ const Stats = () => {
                             </div>
                             <div className="flex flex-col items-end">
                                 <span className="font-mono font-bold">${cat.value.toFixed(2)}</span>
-                                <span className="text-xs text-slate-500">{((cat.value / expense) * 100).toFixed(1)}%</span>
+                                <span className="text-xs text-slate-500">{expense > 0 ? ((cat.value / expense) * 100).toFixed(1) : 0}%</span>
                             </div>
                         </motion.div>
                     ))}

@@ -33,21 +33,17 @@ const Dashboard = () => {
     return (
         <Layout>
             <header className="mb-8">
-                <motion.h2
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="text-3xl font-bold text-white"
-                >
-                    Bienvenido de nuevo, <span className="text-primary">Minino</span>
-                </motion.h2>
+                <h2 className="text-3xl font-bold text-white">
+                    Bienvenido de nuevo, <span className="text-primary">{user?.displayName?.split(' ')[0] || 'Usuario'}</span>
+                </h2>
                 <p className="text-slate-400">Aquí está el resumen financiero de hoy.</p>
             </header>
 
             {/* Stats Grid */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <StatCard title="Balance Total" amount={`$${balance.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="+0%" isPositive={true} delay={0.1} />
-                <StatCard title="Ingresos (Global)" amount={`$${income.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={true} delay={0.2} />
-                <StatCard title="Gastos (Global)" amount={`$${expense.toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={false} delay={0.3} />
+                <StatCard title="Balance Total" amount={`$${(balance || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="+0%" isPositive={true} delay={0.1} />
+                <StatCard title="Ingresos (Global)" amount={`$${(income || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={true} delay={0.2} />
+                <StatCard title="Gastos (Global)" amount={`$${(expense || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}`} trend="" isPositive={false} delay={0.3} />
             </div>
 
             {/* Accounts Quick View */}
@@ -135,8 +131,8 @@ const Dashboard = () => {
                                     <div className="text-xs text-slate-500">{new Date(item.date).toLocaleDateString()} • {item.category}</div>
                                 </div>
                             </div>
-                            <div className={`font-mono font-medium ${item.type === 'income' ? 'text-primary' : 'text-danger'}`}>
-                                {item.type === 'income' ? '+' : '-'}${item.amount.toFixed(2)}
+                            <div className={`font-mono font-medium ${(item.type === 'income' ? 'text-primary' : 'text-danger')}`}>
+                                {item.type === 'income' ? '+' : '-'}${(item.amount || 0).toFixed(2)}
                             </div>
                         </motion.div>
                     ))}

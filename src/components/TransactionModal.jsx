@@ -14,7 +14,7 @@ const TransactionModal = () => {
     useEffect(() => {
         if (editingTransaction) {
             setType(editingTransaction.type);
-            setAmount(editingTransaction.amount.toString());
+            setAmount(editingTransaction.amount ? editingTransaction.amount.toString() : '');
             setDescription(editingTransaction.description);
             setCategory(editingTransaction.category);
             setAccountId(editingTransaction.accountId);
