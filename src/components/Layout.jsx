@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, CreditCard, Landmark, Target, PieChart, Settings, LogOut, PlusCircle } from 'lucide-react';
+import { LayoutDashboard, CreditCard, Landmark, Target, PieChart, Settings, LogOut, PlusCircle, Wallet } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useFinance } from '../context/FinancialContext';
 import { useAuth } from '../context/AuthContext';
