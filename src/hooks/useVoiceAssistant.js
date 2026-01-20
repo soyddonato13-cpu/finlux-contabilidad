@@ -9,7 +9,7 @@ const CATEGORY_MAP = {
     'salud': ['farmacia', 'médico', 'clínica', 'pastillas', 'dentista', 'hospital']
 };
 
-export const useVoiceAssistant = () => {
+export const useVoiceAssistant = (onSuccess) => {
     const { addTransaction, accounts } = useFinance();
     const [isListening, setIsListening] = useState(false);
     const [message, setMessage] = useState('');
@@ -65,9 +65,10 @@ export const useVoiceAssistant = () => {
                     description: transcript,
                     accountId: accounts[0]?.id || 'acc_1'
                 });
-                setMessage(`¡Listo abuelo! Guardado: $${parsed.amount} en ${parsed.category}`);
+                if (onSuccess) onSuccess();
+                setMessage(`¡Éxito! Transacción guardada: $${parsed.amount} en ${parsed.category}`);
             } else {
-                setMessage('No pude entender el monto. Intenta decir "Gasté 20 dólares..."');
+                setMessage('No se detectó el monto. Reintenta: "Gasté 20 dólares..."');
             }
 
             setTimeout(() => setMessage(''), 5000);

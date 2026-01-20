@@ -2,9 +2,16 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Mic, MicOff, CheckCircle } from 'lucide-react';
 import { useVoiceAssistant } from '../hooks/useVoiceAssistant';
+import { useSound } from '../hooks/useSound';
 
 const VoiceAssistant = () => {
-    const { isListening, startListening, message } = useVoiceAssistant();
+    const { playClick, playSuccess } = useSound();
+    const { isListening, startListening, message } = useVoiceAssistant(playSuccess);
+
+    const handleStart = () => {
+        playClick();
+        startListening();
+    };
 
     return (
         <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3 pointer-events-none">
@@ -23,7 +30,7 @@ const VoiceAssistant = () => {
             </AnimatePresence>
 
             <motion.button
-                onClick={startListening}
+                onClick={handleStart}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className={`w-16 h-16 rounded-full flex items-center justify-center text-white shadow-2xl pointer-events-auto transition-colors relative overflow-hidden ${isListening ? 'bg-danger' : 'bg-primary'
