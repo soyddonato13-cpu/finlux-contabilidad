@@ -7,25 +7,35 @@ import Layout from '../components/Layout';
 import { useFinance } from '../context/FinancialContext';
 
 const Transactions = () => {
-    const { transactions, deleteTransaction, openModal } = useFinance();
-    const [filter, setFilter] = useState('all'); // all, income, expense
+    const { transactions, deleteTransaction, openModal, accounts } = useFinance();
+    const [typeFilter, setTypeFilter] = useState('all');
+    const [categoryFilter, setCategoryFilter] = useState('all');
+    const [accountFilter, setAccountFilter] = useState('all');
     const [searchTerm, setSearchTerm] = useState('');
 
+    const categories = ['Comida', 'Transporte', 'Hogar', 'Ocio', 'Salud', 'General'];
+
     const exportToCSV = () => {
-        const headers = ['Fecha,Descripción,Categoría,Tipo,Monto'];
-        const rows = transactions.map(t => [
-            new Date(t.date).toLocaleDateString(),
-            t.description,
-            t.category,
-            t.type === 'income' ? 'Ingreso' : 'Gasto',
-            t.amount
-        ].join(','));
+        const headers = ['Fecha,Hora,Día,Descripción,Categoría,Cuenta,Tipo,Monto'];
+        const rows = transactions.map(t => {
+            const dateObj = new Date(t.date);
+            return [
+                dateObj.toLocaleDateString(),
+                dateObj.toLocaleTimeString(),
+                new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(dateObj),
+                t.description,
+                t.category,
+                accounts.find(a => a.id === t.accountId)?.name || 'General',
+                t.type === 'income' ? 'Ingreso' : 'Gasto',
+                t.amount
+            ].join(',');
+        });
 
         const csvContent = headers.concat(rows).join('\n');
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
-        link.setAttribute('download', 'finlux_report.csv');
+        link.setAttribute('download', 'finlux_report_detallado.csv');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -33,26 +43,33 @@ const Transactions = () => {
 
     const exportToPDF = () => {
         const doc = new jsPDF();
-        doc.text('FinLux - Reporte de Movimientos', 14, 15);
+        doc.text('FinLux - Reporte Detallado de Movimientos', 14, 15);
         doc.autoTable({
             startY: 20,
-            head: [['Fecha', 'Descripción', 'Categoría', 'Tipo', 'Monto']],
-            body: transactions.map(t => [
-                new Date(t.date).toLocaleDateString(),
-                t.description,
-                t.category,
-                t.type === 'income' ? 'Ingreso' : 'Gasto',
-                `$${t.amount.toLocaleString()}`
-            ]),
+            head: [['Fecha', 'Día', 'Descripción', 'Categoría', 'Cuenta', 'Tipo', 'Monto']],
+            body: transactions.map(t => {
+                const dateObj = new Date(t.date);
+                return [
+                    dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                    new Intl.DateTimeFormat('es-ES', { weekday: 'short' }).format(dateObj),
+                    t.description,
+                    t.category,
+                    accounts.find(a => a.id === t.accountId)?.name || 'General',
+                    t.type === 'income' ? 'Ingreso' : 'Gasto',
+                    `$${t.amount.toLocaleString()}`
+                ];
+            }),
         });
-        doc.save('finlux_report.pdf');
+        doc.save('finlux_report_detallado.pdf');
     };
 
     const filteredTransactions = transactions.filter(t => {
-        const matchesFilter = filter === 'all' || t.type === filter;
+        const matchesType = typeFilter === 'all' || t.type === typeFilter;
+        const matchesCategory = categoryFilter === 'all' || t.category === categoryFilter;
+        const matchesAccount = accountFilter === 'all' || t.accountId === accountFilter;
         const matchesSearch = t.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
             t.category.toLowerCase().includes(searchTerm.toLowerCase());
-        return matchesFilter && matchesSearch;
+        return matchesType && matchesCategory && matchesAccount && matchesSearch;
     });
 
     const handleDelete = (id) => {
@@ -63,60 +80,70 @@ const Transactions = () => {
 
     return (
         <Layout>
-            <header className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-                <div>
-                    <h2 className="text-3xl font-bold text-white">Historial de Movimientos</h2>
-                    <p className="text-slate-400">Gestiona y revisa todas tus transacciones.</p>
+            <header className="flex flex-col gap-6 mb-8">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <h2 className="text-3xl font-bold text-white">Historial Detallado</h2>
+                        <p className="text-slate-400">Revisa fecha, hora y detalles de cada movimiento.</p>
+                    </div>
+
+                    <div className="flex gap-3">
+                        <button
+                            onClick={exportToCSV}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                        >
+                            <Download size={16} />
+                            <span>CSV</span>
+                        </button>
+                        <button
+                            onClick={exportToPDF}
+                            className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
+                        >
+                            <FileText size={16} />
+                            <span>PDF</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div className="flex gap-3">
-                    <button
-                        onClick={exportToCSV}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
-                    >
-                        <Download size={16} />
-                        <span>CSV</span>
-                    </button>
-                    <button
-                        onClick={exportToPDF}
-                        className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-slate-300 hover:text-white hover:bg-white/10 transition-all text-sm font-medium"
-                    >
-                        <FileText size={16} />
-                        <span>PDF</span>
-                    </button>
-                </div>
-
-                <div className="flex gap-2">
-                    <div className="relative">
-                        <Search size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+                <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                    <div className="relative col-span-2 lg:col-span-1">
+                        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
                         <input
                             type="text"
                             placeholder="Buscar..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="bg-surface/50 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm focus:outline-none focus:border-primary/50 w-48 transition-all"
+                            className="w-full bg-surface/50 border border-white/10 rounded-xl pl-9 pr-4 py-2 text-sm focus:outline-none focus:border-primary/50 transition-all"
                         />
                     </div>
-                    <div className="bg-surface/50 border border-white/10 rounded-xl p-1 flex">
-                        <button
-                            onClick={() => setFilter('all')}
-                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === 'all' ? 'bg-white/10 text-white' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            Todos
-                        </button>
-                        <button
-                            onClick={() => setFilter('income')}
-                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === 'income' ? 'bg-primary/20 text-primary' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            Ingresos
-                        </button>
-                        <button
-                            onClick={() => setFilter('expense')}
-                            className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors ${filter === 'expense' ? 'bg-danger/20 text-danger' : 'text-slate-400 hover:text-white'}`}
-                        >
-                            Gastos
-                        </button>
-                    </div>
+
+                    <select
+                        value={typeFilter}
+                        onChange={(e) => setTypeFilter(e.target.value)}
+                        className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-primary/50 transition-all hover:bg-white/5"
+                    >
+                        <option value="all">Todos los Tipos</option>
+                        <option value="income">Solo Ingresos</option>
+                        <option value="expense">Solo Gastos</option>
+                    </select>
+
+                    <select
+                        value={categoryFilter}
+                        onChange={(e) => setCategoryFilter(e.target.value)}
+                        className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-primary/50 transition-all hover:bg-white/5"
+                    >
+                        <option value="all">Categorías</option>
+                        {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                    </select>
+
+                    <select
+                        value={accountFilter}
+                        onChange={(e) => setAccountFilter(e.target.value)}
+                        className="bg-surface/50 border border-white/10 rounded-xl px-3 py-2 text-sm text-slate-300 focus:outline-none focus:border-primary/50 transition-all hover:bg-white/5"
+                    >
+                        <option value="all">Todas las Cuentas</option>
+                        {accounts.map(acc => <option key={acc.id} value={acc.id}>{acc.name}</option>)}
+                    </select>
                 </div>
             </header>
 
@@ -147,7 +174,12 @@ const Transactions = () => {
                                                 <div className={`w-8 h-8 rounded-full flex items-center justify-center ${t.type === 'income' ? 'bg-primary/10 text-primary' : 'bg-danger/10 text-danger'}`}>
                                                     {t.type === 'income' ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}
                                                 </div>
-                                                <span className="font-medium text-white">{t.description}</span>
+                                                <div>
+                                                    <span className="font-medium text-white block">{t.description}</span>
+                                                    <span className="text-[10px] uppercase text-slate-500 font-bold tracking-tight">
+                                                        {accounts.find(a => a.id === t.accountId)?.name || 'Cuenta General'}
+                                                    </span>
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="p-6">
@@ -155,8 +187,15 @@ const Transactions = () => {
                                                 {t.category}
                                             </span>
                                         </td>
-                                        <td className="p-6 text-slate-400 text-sm">
-                                            {new Date(t.date).toLocaleDateString()}
+                                        <td className="p-6">
+                                            <div className="flex flex-col">
+                                                <span className="text-white text-sm font-medium capitalize">
+                                                    {new Intl.DateTimeFormat('es-ES', { weekday: 'long' }).format(new Date(t.date))}
+                                                </span>
+                                                <span className="text-slate-400 text-xs">
+                                                    {new Intl.DateTimeFormat('es-ES', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }).format(new Date(t.date))}
+                                                </span>
+                                            </div>
                                         </td>
                                         <td className={`p-6 text-right font-mono font-medium ${t.type === 'income' ? 'text-primary' : 'text-danger'}`}>
                                             {t.type === 'income' ? '+' : '-'}${t.amount.toFixed(2)}
