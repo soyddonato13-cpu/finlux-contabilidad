@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { getFirestore, enableIndexedDbPersistence } from "firebase/firestore";
 
 // TODO: Replace with your actual Firebase config from the Firebase Console
 const firebaseConfig = {
@@ -19,5 +19,14 @@ const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 export const db = getFirestore(app);
+
+// Enable Offline Persistence
+enableIndexedDbPersistence(db).catch((err) => {
+    if (err.code === 'failed-precondition') {
+        console.warn("La persistencia falló: Múltiples pestañas abiertas.");
+    } else if (err.code === 'unimplemented') {
+        console.warn("La persistencia no es compatible con este navegador.");
+    }
+});
 
 export default app;

@@ -140,20 +140,20 @@ const TransactionModal = () => {
                                         value={description}
                                         onChange={(e) => setDescription(e.target.value)}
                                         placeholder="Ej: Cena con amigos..."
-                                        className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-primary/50 transition-colors"
+                                        className="w-full bg-background border border-white/10 rounded-xl py-3 px-4 text-white text-base md:text-sm focus:outline-none focus:border-primary/50 transition-colors"
                                     />
                                 </div>
 
                                 {/* Category (Simplified for now) */}
                                 <div>
                                     <label className="block text-xs uppercase tracking-wider text-slate-500 mb-2">Categoría</label>
-                                    <div className="flex gap-2 overflow-x-auto pb-2 noscroll">
-                                        {['Comida', 'Transporte', 'Hogar', 'Ocio', 'Salud'].map(cat => (
+                                    <div className="flex gap-2 overflow-x-auto pb-4 noscroll">
+                                        {['Comida', 'Transporte', 'Hogar', 'Ocio', 'Salud', 'Servicios', 'Educación', 'Compras', 'Inversiones', 'Mantenimiento'].map(cat => (
                                             <button
                                                 key={cat}
                                                 type="button"
                                                 onClick={() => setCategory(cat)}
-                                                className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors whitespace-nowrap ${category === cat ? 'bg-white text-black border-white' : 'bg-transparent text-slate-400 border-white/10 hover:border-white/30'}`}
+                                                className={`px-4 py-2 rounded-full text-xs font-medium border transition-colors whitespace-nowrap ${category === cat ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-transparent text-slate-400 border-white/10 hover:border-white/30'}`}
                                             >
                                                 {cat}
                                             </button>

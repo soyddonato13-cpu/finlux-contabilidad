@@ -2,11 +2,16 @@ import { useState, useCallback } from 'react';
 import { useFinance } from '../context/FinancialContext';
 
 const CATEGORY_MAP = {
-    'transporte': ['gasolina', 'camioneta', 'pasaje', 'taxi', 'uber', 'bus', 'carro', 'moto', 'viaje'],
-    'comida': ['almuerzo', 'cena', 'mercado', 'super', 'pan', 'restaurante', 'comida', 'hambre', 'merienda'],
-    'hogar': ['luz', 'agua', 'alquiler', 'renta', 'casa', 'internet', 'limpieza', 'mueble'],
-    'ocio': ['cine', 'fiesta', 'cerveza', 'juego', 'diversión', 'regalo'],
-    'salud': ['farmacia', 'médico', 'clínica', 'pastillas', 'dentista', 'hospital']
+    'transporte': ['gasolina', 'camioneta', 'pasaje', 'taxi', 'uber', 'bus', 'carro', 'moto', 'viaje', 'repuesto', 'caucho', 'aceite'],
+    'comida': ['almuerzo', 'cena', 'mercado', 'super', 'pan', 'restaurante', 'comida', 'hambre', 'merienda', 'fruta', 'pollo', 'carne'],
+    'hogar': ['luz', 'agua', 'alquiler', 'renta', 'casa', 'internet', 'limpieza', 'mueble', 'reparación', 'pintura'],
+    'ocio': ['cine', 'fiesta', 'cerveza', 'juego', 'diversión', 'regalo', 'salida', 'licor', 'paseo'],
+    'salud': ['farmacia', 'médico', 'clínica', 'pastillas', 'dentista', 'hospital', 'examen', 'laboratorio', 'lentes'],
+    'servicios': ['teléfono', 'celular', 'netflix', 'spotify', 'aseo', 'condominio', 'gas', 'electricidad'],
+    'educación': ['curso', 'colegio', 'universidad', 'libro', 'útiles', 'taller', 'mensualidad'],
+    'compras': ['ropa', 'zapatos', 'reloj', 'celular', 'pc', 'tecnología', 'herramienta'],
+    'inversiones': ['dólares', 'ahorro', 'cryptos', 'acciones', 'negocio', 'oro'],
+    'mantenimiento': ['técnico', 'lavado', 'revisión', 'taller mecánico', 'repuesto']
 };
 
 export const useVoiceAssistant = (onSuccess) => {
