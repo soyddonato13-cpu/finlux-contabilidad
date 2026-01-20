@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { useFinance } from '../context/FinancialContext';
 import { useAuth } from '../context/AuthContext';
 import TransactionModal from './TransactionModal';
+import VoiceAssistant from './VoiceAssistant';
 import { useSound } from '../hooks/useSound';
 
 const SidebarItem = ({ icon: Icon, label, to, active }) => {
@@ -33,8 +34,9 @@ const Layout = ({ children }) => {
 
     return (
         <div className="flex h-screen bg-background relative overflow-hidden">
-            {/* Transaction Modal Injected Here */}
+            {/* UI Overlays */}
             <TransactionModal />
+            <VoiceAssistant />
 
             {/* Ambient Background - Animated Orbs */}
             <div className="absolute top-[-20%] left-[-10%] w-[500px] h-[500px] bg-primary/20 rounded-full blur-[120px] animate-float opacity-60 pointer-events-none" />
