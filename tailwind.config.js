@@ -7,12 +7,12 @@ export default {
     theme: {
         extend: {
             colors: {
-                background: '#0f172a', // Slate 900
-                surface: '#1e293b',    // Slate 800
-                primary: '#10b981',    // Emerald 500
-                accent: '#f59e0b',     // Amber 500
+                background: '#040b16', // Midnight Darker
+                surface: '#0A192F',    // Isaron Midnight Blue
+                primary: '#D4AF37',    // Isaron Gold
+                accent: '#F5E6BE',     // Elegant Beige
                 danger: '#ef4444',     // Red 500
-                glass: 'rgba(30, 41, 59, 0.7)',
+                glass: 'rgba(10, 25, 47, 0.7)',
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],

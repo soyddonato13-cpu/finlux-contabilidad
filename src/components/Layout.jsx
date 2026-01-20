@@ -49,30 +49,41 @@ const Layout = ({ children }) => {
                 transition={{ duration: 0.8, ease: "easeOut" }}
                 className="w-64 h-full p-6 z-10 hidden md:flex flex-col border-r border-white/5 bg-glass backdrop-blur-xl supports-[backdrop-filter]:bg-surface/50"
             >
-                <div className="flex items-center gap-3 mb-10 px-2">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-emerald-700 flex items-center justify-center shadow-lg">
-                        <Wallet className="text-white" size={24} />
+                <div className="flex flex-col mb-10 px-2">
+                    <div className="flex items-center gap-3 mb-2">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-[#b8860b] flex items-center justify-center shadow-lg shadow-primary/20">
+                            <Wallet className="text-[#0A192F]" size={24} />
+                        </div>
+                        <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-primary">
+                            FinLux
+                        </h1>
                     </div>
-                    <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                        FinLux
-                    </h1>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-primary/60 pl-1">
+                        By Isaron Studio
+                    </p>
                 </div>
 
                 <nav className="flex-1 space-y-2">
                     <SidebarItem icon={LayoutDashboard} label="Resumen" to="/" active={location.pathname === '/'} />
                     <SidebarItem icon={Landmark} label="Cuentas" to="/accounts" active={location.pathname === '/accounts'} />
-                    <SidebarItem icon={Target} label="Presupuestos" to="/budgets" active={location.pathname === '/budgets'} />
+                    <SidebarItem icon={Target} label="Metas" to="/budgets" active={location.pathname === '/budgets'} />
                     <SidebarItem icon={CreditCard} label="Movimientos" to="/transactions" active={location.pathname === '/transactions'} />
                     <SidebarItem icon={PieChart} label="Estadísticas" to="/stats" active={location.pathname === '/stats'} />
                     <SidebarItem icon={Settings} label="Ajustes" to="/settings" active={location.pathname === '/settings'} />
                 </nav>
 
                 <div className="pt-6 border-t border-white/5 space-y-4">
+                    <div className="px-2 mb-2">
+                        <p className="text-[9px] text-slate-500 font-bold uppercase tracking-widest text-center">
+                            Engineered by <span className="text-primary italic">Isaron Studio</span>
+                        </p>
+                    </div>
+
                     <motion.button
                         onClick={openModal}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-emerald-600 text-white font-semibold shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+                        className="w-full py-3 rounded-xl bg-gradient-to-r from-primary to-[#b8860b] text-[#0A192F] font-black shadow-lg shadow-primary/10 flex items-center justify-center gap-2"
                     >
                         <PlusCircle size={20} />
                         <span>Nuevo Movimiento</span>
@@ -94,7 +105,7 @@ const Layout = ({ children }) => {
                             onClick={loginWithGoogle}
                             className="w-full py-3 rounded-xl border border-white/10 text-slate-300 hover:bg-white/5 hover:text-white flex items-center justify-center gap-2 transition-all"
                         >
-                            <span>Acceder con Google</span>
+                            <span className="text-xs font-bold uppercase tracking-widest">Acceder con Google</span>
                         </button>
                     )}
                 </div>
@@ -102,12 +113,17 @@ const Layout = ({ children }) => {
 
             {/* Mobile Top Header */}
             <div className="fixed top-0 left-0 w-full h-16 bg-surface/80 backdrop-blur-xl border-b border-white/5 md:hidden z-50 flex justify-between items-center px-6">
-                <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-emerald-700 flex items-center justify-center shadow-lg">
-                        <Wallet className="text-white" size={18} />
+                <div className="flex flex-col">
+                    <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-[#b8860b] flex items-center justify-center shadow-lg shadow-primary/20">
+                            <Wallet className="text-[#0A192F]" size={18} />
+                        </div>
+                        <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-primary">
+                            FinLux
+                        </span>
                     </div>
-                    <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400">
-                        FinLux
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] text-primary/40 mt-0.5 ml-0.5">
+                        Isaron Studio Asset
                     </span>
                 </div>
 
@@ -123,7 +139,7 @@ const Layout = ({ children }) => {
                     <motion.button
                         whileTap={{ scale: 0.9 }}
                         onClick={loginWithGoogle}
-                        className="bg-primary/20 text-primary border border-primary/30 p-2 rounded-lg text-xs font-bold uppercase tracking-wider"
+                        className="bg-primary text-[#0A192F] p-2 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-lg shadow-primary/20"
                     >
                         Entrar
                     </motion.button>
