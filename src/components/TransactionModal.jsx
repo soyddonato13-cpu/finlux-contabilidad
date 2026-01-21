@@ -23,16 +23,23 @@ const TransactionModal = () => {
             setAmount('');
             setDescription('');
             setCategory('');
-            setAccountId(accounts[0]?.id || '');
+            // Ensure we pick the first account if nothing is selected
+            if (!accountId && accounts.length > 0) {
+                setAccountId(accounts[0].id);
+            }
         }
-    }, [editingTransaction, isModalOpen, accounts]);
+    }, [editingTransaction, isModalOpen, accounts, accountId]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Modal: Submit triggered", { amount, description, accountId });
 
-        if (!amount || !description || !accountId) {
-            console.warn("Modal: Missing required fields");
+        // Final fallback: if accountId is still missing, take the first one
+        const finalAccountId = accountId || accounts[0]?.id;
+
+        console.log("Modal: Submit triggered", { amount, description, accountId: finalAccountId });
+
+        if (!amount || !description || !finalAccountId) {
+            console.warn("Modal: Missing required fields", { amount, description, finalAccountId });
             return;
         }
 
@@ -42,7 +49,7 @@ const TransactionModal = () => {
                 amount: parseFloat(amount),
                 description,
                 category: category || 'General',
-                accountId
+                accountId: finalAccountId
             };
 
             if (editingTransaction) {
@@ -53,6 +60,10 @@ const TransactionModal = () => {
 
             console.log("Modal: Success, closing...");
             closeModal();
+            // Reset local state for next use
+            setAmount('');
+            setDescription('');
+            setCategory('');
         } catch (error) {
             console.error("Modal: Error during submit:", error);
             alert("No se pudo guardar la transacción. Por favor, verifica tu conexión o intenta de nuevo.");
