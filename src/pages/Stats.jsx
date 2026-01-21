@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import Layout from '../components/Layout';
 import { useFinance } from '../context/FinancialContext';
 
-const COLORS = ['#10b981', '#f59e0b', '#ef4444', '#3b82f6', '#8b5cf6', '#ec4899'];
+const COLORS = ['#D4AF37', '#F5E6BE', '#5e4b1a', '#e6c867', '#8a7126', '#b38b00'];
 
 const CategoryItem = ({ cat, index, totalExpense, transactions }) => {
     const [isExpanded, setIsExpanded] = React.useState(false);
@@ -92,7 +92,7 @@ const Stats = () => {
                 <motion.div
                     initial={{ scale: 0.95, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
-                    className="bg-surface/30 backdrop-blur-3xl border border-white/5 rounded-[40px] p-10 flex flex-col items-center justify-center relative shadow-2xl h-fit sticky top-6"
+                    className="bg-surface/30 backdrop-blur-3xl border border-white/5 rounded-[40px] p-6 lg:p-10 flex flex-col items-center justify-center relative shadow-2xl h-fit lg:sticky lg:top-6"
                 >
                     <h3 className="text-xl font-bold mb-8 w-full text-left text-white/90">Distribución Mensual</h3>
 
@@ -103,7 +103,7 @@ const Stats = () => {
                         </div>
                     )}
 
-                    <div className="w-full h-[300px]">
+                    <div className="w-full h-[250px] lg:h-[300px]">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie

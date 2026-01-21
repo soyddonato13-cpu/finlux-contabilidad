@@ -49,10 +49,6 @@ const VoiceAssistant = () => {
                     <Mic size={24} className="text-[#0a192f]" />
                 )}
             </motion.button>
-
-            <p className="text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold pr-1 bg-white/5 backdrop-blur-md px-2 py-1 rounded-full border border-white/5">
-                Voz
-            </p>
         </div>
     );
 };
