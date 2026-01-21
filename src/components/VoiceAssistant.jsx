@@ -14,16 +14,16 @@ const VoiceAssistant = () => {
     };
 
     return (
-        <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3 pointer-events-none">
+        <div className="fixed bottom-24 right-4 z-[100] flex flex-col items-end gap-2 pointer-events-none">
             <AnimatePresence>
                 {message && (
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.8, y: 10 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        className="bg-primary text-white px-6 py-3 rounded-2xl shadow-2xl flex items-center gap-2 border border-white/20"
+                        className="bg-primary text-[#0a192f] px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 border border-white/20 text-sm"
                     >
-                        <CheckCircle size={18} />
+                        <CheckCircle size={14} />
                         <span className="font-bold">{message}</span>
                     </motion.div>
                 )}
@@ -33,12 +33,12 @@ const VoiceAssistant = () => {
                 onClick={handleStart}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
-                className={`w-16 h-16 rounded-full flex items-center justify-center text-white shadow-2xl pointer-events-auto transition-colors relative overflow-hidden ${isListening ? 'bg-danger' : 'bg-primary'
+                className={`w-14 h-14 rounded-full flex items-center justify-center text-white shadow-2xl pointer-events-auto transition-colors relative overflow-hidden ring-4 ring-background ${isListening ? 'bg-danger' : 'bg-primary'
                     }`}
             >
                 {isListening ? (
                     <>
-                        <MicOff size={28} />
+                        <MicOff size={24} />
                         <motion.div
                             animate={{ scale: [1, 1.5, 1], opacity: [0.5, 0, 0.5] }}
                             transition={{ repeat: Infinity, duration: 2 }}
@@ -46,12 +46,12 @@ const VoiceAssistant = () => {
                         />
                     </>
                 ) : (
-                    <Mic size={28} />
+                    <Mic size={24} className="text-[#0a192f]" />
                 )}
             </motion.button>
 
-            <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold pr-2 bg-background/50 backdrop-blur-sm px-2 py-1 rounded-full">
-                Asistente de Voz
+            <p className="text-[8px] uppercase tracking-[0.2em] text-slate-500 font-bold pr-1 bg-white/5 backdrop-blur-md px-2 py-1 rounded-full border border-white/5">
+                Voz
             </p>
         </div>
     );
