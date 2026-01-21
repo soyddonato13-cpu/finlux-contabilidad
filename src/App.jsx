@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
@@ -7,7 +7,7 @@ import Settings from './pages/Settings';
 import Accounts from './pages/Accounts';
 import Budgets from './pages/Budgets';
 import { FinancialProvider } from './context/FinancialContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
 const AppWithLoading = () => {
   const { loading } = useAuth();
