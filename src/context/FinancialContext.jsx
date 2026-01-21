@@ -84,46 +84,64 @@ export const FinancialProvider = ({ children }) => {
     };
 
     const addTransaction = async (transaction) => {
-        const newTransaction = {
-            date: new Date().toISOString(),
-            ...transaction
-        };
+        console.log("Context: Attempting to add transaction:", transaction);
+        try {
+            const newTransaction = {
+                date: new Date().toISOString(),
+                ...transaction,
+                amount: Number(transaction.amount) || 0
+            };
 
-        if (user) {
-            await addDoc(collection(db, 'users', user.uid, 'transactions'), newTransaction);
-        } else {
-            setTransactions([{ id: Date.now(), ...newTransaction }, ...transactions]);
+            if (user) {
+                console.log("Context: Saving to Firestore for user:", user.uid);
+                await addDoc(collection(db, 'users', user.uid, 'transactions'), newTransaction);
+            } else {
+                console.log("Context: Saving to LocalStorage (Guest Mode)");
+                setTransactions(prev => [{ id: Date.now(), ...newTransaction }, ...prev]);
+            }
+
+            await updateAccountBalance(transaction.accountId, newTransaction.amount, transaction.type);
+            console.log("Context: Transaction added successfully");
+            return true;
+        } catch (error) {
+            console.error("Context Error (addTransaction):", error);
+            throw error;
         }
-        await updateAccountBalance(transaction.accountId, transaction.amount, transaction.type);
     };
 
     const deleteTransaction = async (id) => {
-        const transaction = transactions.find(t => t.id === id);
-        if (transaction) {
-            // Reverse balance
-            await updateAccountBalance(transaction.accountId, transaction.amount, transaction.type === 'income' ? 'expense' : 'income');
+        try {
+            const transaction = transactions.find(t => t.id === id);
+            if (transaction) {
+                await updateAccountBalance(transaction.accountId, transaction.amount, transaction.type === 'income' ? 'expense' : 'income');
 
-            if (user) {
-                await deleteDoc(doc(db, 'users', user.uid, 'transactions', id));
-            } else {
-                setTransactions(prev => prev.filter(t => t.id !== id));
+                if (user) {
+                    await deleteDoc(doc(db, 'users', user.uid, 'transactions', id));
+                } else {
+                    setTransactions(prev => prev.filter(t => t.id !== id));
+                }
             }
+        } catch (error) {
+            console.error("Context Error (deleteTransaction):", error);
         }
     };
 
     const updateTransaction = async (id, updatedData) => {
-        const oldTransaction = transactions.find(t => t.id === id);
-        if (oldTransaction) {
-            // Reverse old impact
-            await updateAccountBalance(oldTransaction.accountId, oldTransaction.amount, oldTransaction.type === 'income' ? 'expense' : 'income');
-            // Apply new impact
-            await updateAccountBalance(updatedData.accountId, updatedData.amount, updatedData.type);
+        try {
+            const oldTransaction = transactions.find(t => t.id === id);
+            if (oldTransaction) {
+                await updateAccountBalance(oldTransaction.accountId, oldTransaction.amount, oldTransaction.type === 'income' ? 'expense' : 'income');
+                await updateAccountBalance(updatedData.accountId, updatedData.amount, updatedData.type);
 
-            if (user) {
-                await updateDoc(doc(db, 'users', user.uid, 'transactions', id), updatedData);
-            } else {
-                setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updatedData } : t));
+                if (user) {
+                    await updateDoc(doc(db, 'users', user.uid, 'transactions', id), updatedData);
+                } else {
+                    setTransactions(prev => prev.map(t => t.id === id ? { ...t, ...updatedData } : t));
+                }
             }
+        } catch (error) {
+            console.error("Context Error (updateTransaction):", error);
+            throw error;
         }
     };
 

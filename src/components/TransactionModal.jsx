@@ -27,25 +27,36 @@ const TransactionModal = () => {
         }
     }, [editingTransaction, isModalOpen, accounts]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!amount || !description || !accountId) return;
+        console.log("Modal: Submit triggered", { amount, description, accountId });
 
-        const transactionData = {
-            type,
-            amount: parseFloat(amount),
-            description,
-            category: category || 'General',
-            accountId
-        };
-
-        if (editingTransaction) {
-            updateTransaction(editingTransaction.id, transactionData);
-        } else {
-            addTransaction(transactionData);
+        if (!amount || !description || !accountId) {
+            console.warn("Modal: Missing required fields");
+            return;
         }
 
-        closeModal();
+        try {
+            const transactionData = {
+                type,
+                amount: parseFloat(amount),
+                description,
+                category: category || 'General',
+                accountId
+            };
+
+            if (editingTransaction) {
+                await updateTransaction(editingTransaction.id, transactionData);
+            } else {
+                await addTransaction(transactionData);
+            }
+
+            console.log("Modal: Success, closing...");
+            closeModal();
+        } catch (error) {
+            console.error("Modal: Error during submit:", error);
+            alert("No se pudo guardar la transacción. Por favor, verifica tu conexión o intenta de nuevo.");
+        }
     };
 
     return (
