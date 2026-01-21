@@ -13,6 +13,22 @@ const AppWithLoading = () => {
   const { loading } = useAuth();
 
   useEffect(() => {
+    // One-time cache purge to resolve white/blue screen issues
+    const hasPurged = localStorage.getItem('finlux_purge_v2');
+    if (!hasPurged) {
+      console.log("App: Performing one-time cache purge...");
+      if ('caches' in window) {
+        caches.keys().then((names) => {
+          return Promise.all(names.map(name => caches.delete(name)));
+        }).then(() => {
+          localStorage.setItem('finlux_purge_v2', 'true');
+          console.log("App: Cache purged, reloading...");
+          window.location.reload();
+        });
+      } else {
+        localStorage.setItem('finlux_purge_v2', 'true');
+      }
+    }
     console.log("App mounted. Auth Loading:", loading);
   }, [loading]);
 
